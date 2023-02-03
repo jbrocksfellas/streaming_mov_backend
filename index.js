@@ -2,7 +2,6 @@ const express = require("express");
 const { Server } = require("socket.io");
 const wrtc = require("wrtc");
 const { connections, rooms, isPresent, findHost } = require("./store");
-const cors = require("cors");
 require("dotenv").config();
 
 const HOST = process.env.HOST;
@@ -14,7 +13,6 @@ console.log(HOST, PORT, ALLOWED_ORIGINS, ALLOWED_METHODS);
 
 const app = express();
 
-app.use(cors({ origin: "*" }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -22,7 +20,7 @@ const server = app.listen(PORT, () => {
   console.log("started listening on port " + PORT);
 });
 
-const io = new Server(server, { cors: "*" });
+const io = new Server(server, { cors: ["*"] });
 
 io.on("connection", (socket) => {
   console.log("Connected", socket.id);
