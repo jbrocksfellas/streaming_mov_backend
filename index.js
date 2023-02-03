@@ -14,15 +14,15 @@ console.log(HOST, PORT, ALLOWED_ORIGINS, ALLOWED_METHODS);
 
 const app = express();
 
-app.use(cors({ origin: ALLOWED_ORIGINS }));
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const server = app.listen(PORT, HOST, () => {
+const server = app.listen(PORT, () => {
   console.log("started listening on port " + PORT);
 });
 
-const io = new Server(server, { cors: { origin: ALLOWED_ORIGINS } });
+const io = new Server(server, { cors: "*" });
 
 io.on("connection", (socket) => {
   console.log("Connected", socket.id);
