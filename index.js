@@ -2,17 +2,25 @@ const express = require("express");
 const { Server } = require("socket.io");
 const wrtc = require("wrtc");
 const { connections, rooms, isPresent, findHost } = require("./store");
+const cors = require("cors");
+require("dotenv").config();
+
+const HOST = process.env.HOST;
+const PORT = process.env.PORT;
+const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS;
+const ALLOWED_METHODS = process.env.ALLOWED_METHODS;
 
 const app = express();
 
+app.use(cors({ origin: ALLOWED_ORIGINS }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const server = app.listen(8080, () => {
-  console.log("started listening on port " + 8080);
+const server = app.listen(PORT, HOST, () => {
+  console.log("started listening on port " + PORT);
 });
 
-const io = new Server(server, { cors: ["*"] });
+const io = new Server(server, { cors: ALLOWED_ORIGINS });
 
 io.on("connection", (socket) => {
   console.log("Connected", socket.id);
@@ -33,7 +41,6 @@ io.on("connection", (socket) => {
             io.to(host.socketId).emit("join_request", { id, username, socketId: socket.id });
           }
         } else {
-          console.log("opposite");
           rooms[id] = [{ username, socketId: socket.id, host: true }];
           socket.emit("joined_room", { id, users: rooms[id].map((user) => ({ usename: user.username, host: user.host })) });
         }
@@ -68,6 +75,12 @@ io.on("connection", (socket) => {
     console.log(`${username} send message ${message} to ${id} at ${createdAt}`);
 
     const sockets = rooms[id].filter((user) => user.socketId !== socket.id).map((user) => user.socketId);
-    io.to(sockets).emit("message", { id, message, username, createdAt });
+    console.log(
+      rooms[id].map((r) => r.socketId),
+      sockets
+    );
+    if (sockets.length) {
+      io.to(sockets).emit("message", { id, message, username, createdAt });
+    }
   });
 });
