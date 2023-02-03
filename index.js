@@ -22,7 +22,7 @@ const server = app.listen(PORT, HOST, () => {
   console.log("started listening on port " + PORT);
 });
 
-const io = new Server(server, { cors: ALLOWED_ORIGINS });
+const io = new Server(server, { cors: { origin: ALLOWED_ORIGINS } });
 
 io.on("connection", (socket) => {
   console.log("Connected", socket.id);
