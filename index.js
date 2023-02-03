@@ -10,6 +10,8 @@ const PORT = process.env.PORT;
 const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS;
 const ALLOWED_METHODS = process.env.ALLOWED_METHODS;
 
+console.log(HOST, PORT, ALLOWED_ORIGINS, ALLOWED_METHODS);
+
 const app = express();
 
 app.use(cors({ origin: ALLOWED_ORIGINS }));
