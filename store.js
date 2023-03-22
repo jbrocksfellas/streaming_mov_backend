@@ -1,7 +1,7 @@
 const connections = {};
 const rooms = {};
 
-// [{name: "gaurav", host: true}]
+// [{name: "gaurav", host: true}] example
 
 function findHost({ roomId }) {
   const host = rooms[roomId].find((user) => user.host);
